@@ -1,0 +1,59 @@
+:root {
+  font-family: 'Manuale', Georgia, serif;
+  color: #2b211a;
+  background: #986f45;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --vault-paper: #f3ecdc;
+  --vault-panel: #f8f3e8;
+  --vault-sidebar: #eee4d0;
+  --vault-ink: #2b211a;
+  --vault-header: #f5efdf;
+  --vault-text: #2b211a;
+  --vault-chat: #f5efdf;
+  --vault-input: #fffdf7;
+  --vault-bubble: #fffaf0;
+  --vault-own-bubble: #fff0b5;
+  --vault-red: #b62e23;
+  --vault-green: #3c623d;
+  --vault-gold: #d6ad56;
+  --vault-muted: #6c5948;
+  --vault-rule: #c4b49a;
+  --handwritten: 'Shadows Into Light', cursive;
+  --ink: var(--vault-ink);
+  --muted: var(--vault-muted);
+  --line: var(--vault-rule);
+  --lime-deep: var(--vault-red);
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --vault-paper: #19140f;
+    --vault-panel: #292119;
+    --vault-sidebar: #241c15;
+    --vault-ink: #f5ead5;
+    --vault-header: #272017;
+    --vault-text: #f5ead5;
+    --vault-chat: #17120e;
+    --vault-input: #17120e;
+    --vault-bubble: #2b231a;
+    --vault-own-bubble: #49371e;
+    --vault-red: #ee5948;
+    --vault-green: #a6cb83;
+    --vault-gold: #e4bd69;
+    --vault-muted: #c2b19a;
+    --vault-rule: #66543f;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
+@font-face { font-family: 'Manuale'; src: url('/fonts/manuale-latin.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Shadows Into Light'; src: url('/fonts/shadows-into-light-latin.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+body { background: var(--vault-paper); color: var(--vault-ink); }
+button, input, textarea { font: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--vault-red); outline-offset: 2px; }
+::selection { color: #fff8e9; background: var(--vault-red); }

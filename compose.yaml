@@ -1,0 +1,69 @@
+name: r0tt3d
+
+services:
+  database:
+    build:
+      context: ./infra/postgres
+    image: r0tt3d-postgres:17
+    environment:
+      POSTGRES_USER: postgres_admin
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?Run scripts/matrix-up.sh first}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --encoding=UTF8 --locale=C
+      SYNAPSE_DB_PASSWORD: ${SYNAPSE_DB_PASSWORD:?Run scripts/matrix-up.sh first}
+    volumes:
+      - matrix_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    networks: [database_private]
+
+  synapse:
+    image: ghcr.io/element-hq/synapse:v1.161.0@sha256:6b95dd129e35e97e8032cb759e5db4a516a5f7ef6c98d34d716fea1ae239b62a
+    environment:
+      SYNAPSE_CONFIG_PATH: /data/homeserver.yaml
+    volumes:
+      - synapse_data:/data
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8008:8008"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8008/_matrix/client/versions', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+    networks: [database_private, web_matrix]
+
+  web:
+    build:
+      context: ./web
+    environment:
+      VITE_MATRIX_PROXY_TARGET: http://synapse:8008
+      R0TT3D_TLS_DIR: /app/tls
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    depends_on:
+      synapse:
+        condition: service_healthy
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    networks: [web_matrix]
+
+networks:
+  database_private:
+    internal: true
+  web_matrix:
+    driver: bridge
+
+volumes:
+  matrix_postgres_data:
+  synapse_data:
+    external: true
+    name: r0tt3d_synapse_data

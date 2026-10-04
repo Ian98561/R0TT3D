@@ -1,0 +1,18 @@
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Local TLS keys and certificates
+infra/certs/
+web/tls/
+*.key
+*.pem
+
+# Runtime data, logs, caches, and build output
+.playwright-cli/
+tmp/
+web/node_modules/
+web/dist/
+web/.vite/
+.DS_Store
